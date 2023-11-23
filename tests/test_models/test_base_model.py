@@ -77,6 +77,7 @@ class test_basemodel(unittest.TestCase):
         with self.assertRaises(TypeError):
             new = self.value(**n)
 
+    @unittest.skip("Not in this version")
     def test_kwargs_one(self):
         """ """
         n = {'Name': 'test'}

@@ -25,8 +25,8 @@ class DBStorage:
         db_name = os.getenv("HBNB_MYSQL_DB")
         p_env = os.getenv("HBNB_ENV")
 
-        engine_string = "mysql+mysqldb://{}:{}@{}/{}".format(user,passwd,
-                                                          lhost, db_name)
+        engine_string = "mysql+mysqldb://{}:{}@{}/{}".format(user, passwd,
+                                                             lhost, db_name)
         self.__engine = create_engine(engine_string, pool_pre_ping=True)
 
         if (p_env == "test"):
@@ -51,7 +51,7 @@ class DBStorage:
             for value in classes.values():
                 all_item = self.__session.query(value).all()
                 for item in all_item:
-                    key_format = item.__class__.__name__ + "."+ item.id
+                    key_format = item.__class__.__name__ + "." + item.id
                     obj_dict[key_format] = item
             return obj_dict
 
@@ -72,6 +72,6 @@ class DBStorage:
         """Loads up content from the db """
         Base.metadata.create_all(self.__engine)
         session_factory = sessionmaker(bind=self.__engine,
-                               expire_on_commit=False)
+                                       expire_on_commit=False)
         Session = scoped_session(session_factory)
         self.__session = Session()
