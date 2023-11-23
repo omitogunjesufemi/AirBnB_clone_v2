@@ -15,7 +15,7 @@ class State(BaseModel, Base):
 
     @property
     def cities(self):
-        """Getter for cities """
+        """Getter for cities attribute when in fileStorage """
         cities_dict = {}
         all_cities = storage.all(City)
         for key, value in all_cities.items():
