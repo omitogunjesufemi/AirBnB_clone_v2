@@ -32,24 +32,23 @@ class Place(BaseModel, Base):
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
     amenity_ids = []
+    reviews = relationship("Review",
+                           backref="place",
+                           cascade="all, delete, delete-orphan")
 
-    if os.getenv("HBNB_TYPE_STORAGE") == "db":
-        reviews = relationship("Review",
-                               backref="place",
-                               cascade="all, delete, delete-orphan")
+    amenities = relationship("Amenity",
+                             secondary="place_amenity",
+                             overlaps="place_amenities",
+                             viewonly=False)
 
-        amenities = relationship("Amenity",
-                                 secondary=place_amenity,
-                                 viewonly=False,
-                                 back_populates="place_amenities")
-    else:
+    if os.getenv("HBNB_TYPE_STORAGE") != "db":
         @property
         def reviews(self):
             """ """
             from models import storage
             review_list = []
-            for key, value in storage.all(Review).items():
-                if (self.id == value.place_id):
+            for value in list(storage.all(Review).values()):
+                if self.id == value.place_id:
                     review_list.append(value)
             return review_list
 
@@ -58,6 +57,13 @@ class Place(BaseModel, Base):
             """ """
             from models import storage
             amenities_list = []
-            for am in self.amenities:
-                amenities_list.append(am.id)
+            for amenity in list(storage.all(Amenity).values()):
+                if amenity.id in self.amenity_ids:
+                    amenities_list.append(amenity)
             return amenities_list
+
+        @amenities.setter
+        def amenities(self, obj):
+            """Set amenities for FileStorage"""
+            if isinstance(obj, Amenity):
+                self.amenity_ids.append(obj.id)
