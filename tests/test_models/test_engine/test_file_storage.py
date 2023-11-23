@@ -12,7 +12,7 @@ import os
 class test_fileStorage(unittest.TestCase):
     """ Class to test the file storage method """
 
-    @unittest.skipIf(type(storage) == DBStorage,
+    @unittest.skipIf(type(storage) is DBStorage,
                      "Testing FileStorage")
     def setUp(self):
         """ Set up test environment """
@@ -22,7 +22,7 @@ class test_fileStorage(unittest.TestCase):
         for key in del_list:
             del storage._FileStorage__objects[key]
 
-    @unittest.skipIf(type(storage) == DBStorage,
+    @unittest.skipIf(type(storage) is DBStorage,
                      "Testing FileStorage")
     def tearDown(self):
         """ Remove storage file at end of tests """
@@ -31,13 +31,13 @@ class test_fileStorage(unittest.TestCase):
         except Exception as e:
             pass
 
-    @unittest.skipIf(type(storage) == FileStorage,
+    @unittest.skipIf(type(storage) is FileStorage,
                      "Testing FileStorage")
     def test_obj_list_empty(self):
         """ __objects is initially empty """
         self.assertEqual(len(storage.all()), 0)
 
-    @unittest.skipIf(type(storage) == DBStorage,
+    @unittest.skipIf(type(storage) is DBStorage,
                      "Testing FileStorage")
     def test_new(self):
         """ New object is correctly added to __objects """
@@ -47,7 +47,7 @@ class test_fileStorage(unittest.TestCase):
             temp = obj
         self.assertTrue(temp is obj)
 
-    @unittest.skipIf(type(storage) == DBStorage,
+    @unittest.skipIf(type(storage) is DBStorage,
                      "Testing FileStorage")
     def test_all(self):
         """ __objects is properly returned """
@@ -55,7 +55,7 @@ class test_fileStorage(unittest.TestCase):
         temp = storage.all()
         self.assertIsInstance(temp, dict)
 
-    @unittest.skipIf(type(storage) == DBStorage,
+    @unittest.skipIf(type(storage) is DBStorage,
                      "Testing FileStorage")
     def test_all_with_parameter(self):
         """Class __objects matching the parameter is properly returned """
@@ -63,14 +63,14 @@ class test_fileStorage(unittest.TestCase):
         temp = storage.all(BaseModel)
         self.assertIsInstance(temp, dict)
 
-    @unittest.skipIf(type(storage) == DBStorage,
+    @unittest.skipIf(type(storage) is DBStorage,
                      "Testing FileStorage")
     def test_base_model_instantiation(self):
         """ File is not created on BaseModel save """
         new = BaseModel()
         self.assertFalse(os.path.exists('file.json'))
 
-    @unittest.skipIf(type(storage) == DBStorage,
+    @unittest.skipIf(type(storage) is DBStorage,
                      "Testing FileStorage")
     def test_empty(self):
         """ Data is saved to file """
@@ -80,7 +80,7 @@ class test_fileStorage(unittest.TestCase):
         new2 = BaseModel(**thing)
         self.assertNotEqual(os.path.getsize('file.json'), 0)
 
-    @unittest.skipIf(type(storage) == DBStorage,
+    @unittest.skipIf(type(storage) is DBStorage,
                      "Testing FileStorage")
     def test_save(self):
         """ FileStorage save method """
@@ -88,7 +88,7 @@ class test_fileStorage(unittest.TestCase):
         storage.save()
         self.assertTrue(os.path.exists('file.json'))
 
-    @unittest.skipIf(type(storage) == DBStorage,
+    @unittest.skipIf(type(storage) is DBStorage,
                      "Testing FileStorage")
     def test_reload(self):
         """ Storage file is successfully loaded to __objects """
@@ -100,7 +100,7 @@ class test_fileStorage(unittest.TestCase):
             loaded = obj
         self.assertEqual(new.to_dict()['id'], loaded.to_dict()['id'])
 
-    @unittest.skipIf(type(storage) == DBStorage,
+    @unittest.skipIf(type(storage) is DBStorage,
                      "Testing FileStorage")
     def test_reload_empty(self):
         """ Load from an empty file """
@@ -109,13 +109,13 @@ class test_fileStorage(unittest.TestCase):
         with self.assertRaises(ValueError):
             storage.reload()
 
-    @unittest.skipIf(type(storage) == DBStorage,
+    @unittest.skipIf(type(storage) is DBStorage,
                      "Testing FileStorage")
     def test_reload_from_nonexistent(self):
         """ Nothing happens if file does not exist """
         self.assertEqual(storage.reload(), None)
 
-    @unittest.skipIf(type(storage) == DBStorage,
+    @unittest.skipIf(type(storage) is DBStorage,
                      "Testing FileStorage")
     def test_base_model_save(self):
         """ BaseModel save method calls storage save """
@@ -123,7 +123,7 @@ class test_fileStorage(unittest.TestCase):
         new.save()
         self.assertTrue(os.path.exists('file.json'))
 
-    @unittest.skipIf(type(storage) == DBStorage,
+    @unittest.skipIf(type(storage) is DBStorage,
                      "Testing FileStorage")
     def test_delete_obj(self):
         """Delete obj from __objects if obj is not None """
@@ -140,19 +140,19 @@ class test_fileStorage(unittest.TestCase):
         storage.delete(new_1)
         self.assertEqual(len(storage.all()), 2)
 
-    @unittest.skipIf(type(storage) == DBStorage,
+    @unittest.skipIf(type(storage) is DBStorage,
                      "Testing FileStorage")
     def test_type_path(self):
         """ Confirm __file_path is string """
         self.assertEqual(type(storage._FileStorage__file_path), str)
 
-    @unittest.skipIf(type(storage) == DBStorage,
+    @unittest.skipIf(type(storage) is DBStorage,
                      "Testing FileStorage")
     def test_type_objects(self):
         """ Confirm __objects is a dict """
         self.assertEqual(type(storage.all()), dict)
 
-    @unittest.skipIf(type(storage) == DBStorage,
+    @unittest.skipIf(type(storage) is DBStorage,
                      "Testing FileStorage")
     def test_key_format(self):
         """ Key is properly formatted """
@@ -163,7 +163,7 @@ class test_fileStorage(unittest.TestCase):
             temp = key
         self.assertEqual(temp, 'BaseModel' + '.' + _id)
 
-    @unittest.skipIf(type(storage) == DBStorage,
+    @unittest.skipIf(type(storage) is DBStorage,
                      "Testing FileStorage")
     def test_storage_var_created(self):
         """ FileStorage object storage created """
