@@ -26,11 +26,12 @@ sudo mkdir -p /data/web_static/shared
 
 # Creating Symbolic link
 sudo rm -rf /data/web_static/current
+
 #sudo mkdir -p /data/web_static/current
 sudo ln -sf /data/web_static/releases/test /data/web_static/current
 
 # Give ownership of /data folder to the user and his group
-sudo chown -R "ubuntu":"ubuntu" /data/
+sudo chown -R ubuntu:ubuntu /data/
 
 # Update the Nginx configuration to serve static content
 n_conf="
@@ -42,7 +43,7 @@ server {
        }
 }"
 
-echo "$n_conf" | sudo tee -a /etc/nginx/sites-enabled/default
+echo "$n_conf" | sudo tee /etc/nginx/sites-enabled/default
 
 # Restart nginx server
 sudo service nginx restart
