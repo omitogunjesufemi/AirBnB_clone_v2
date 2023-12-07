@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 """
-Fabric script (based on the file 1-pack_web_static.py) that distributes an
-archive to your web servers, using the function do_deploy
+Fabric script (based on the file 2-do_deploy_web_static.py) that creates and
+distributes an archive to your web servers, using the function deploy
 """
+import os
 from fabric.api import *
 from datetime import datetime
-import os
 
 env.user = "ubuntu"
 env.hosts = ['54.237.64.177', '52.91.136.101']
@@ -28,7 +28,7 @@ def do_pack():
     local("mkdir -p versions/")
     x = local(f"tar -cvzf {file_name} web_static")
     if x.succeeded:
-        return ("versions/{}".format(file_name))
+        return (file_name)
     else:
         return None
 
@@ -57,7 +57,6 @@ def do_deploy(archive_path):
             new_path = archive_path.partition(".")[0]
             new_path = new_path.partition("/")[2]
             new_path = f"/data/web_static/releases/{new_path}/"
-
             run(f"mkdir -p {new_path}")
 
             run(f"tar -xzvf /tmp/{archive_path.split('/')[1]} -C {new_path}")
@@ -78,3 +77,22 @@ def do_deploy(archive_path):
 
     else:
         return False
+
+
+def deploy():
+    """
+    Call the do_pack() function and store the path of the created archive
+
+    Return False if no archive has been created
+
+    Call the do_deploy(archive_path) function, using the new path of the
+    new archive
+
+    Return the return value of do_deploy
+    """
+    archive_path = do_pack()
+    if archive_path is None:
+        return False
+
+    print(archive_path)
+    return do_deploy(archive_path)
