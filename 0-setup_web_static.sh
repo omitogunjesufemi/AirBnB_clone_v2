@@ -30,7 +30,7 @@ sudo rm -rf /data/web_static/current
 sudo ln -sf /data/web_static/releases/test /data/web_static/current
 
 # Give ownership of /data folder to the user and his group
-sudo chown -R "$USER":"$USER" /data/
+sudo chown -R "ubuntu":"ubuntu" /data/
 
 # Update the Nginx configuration to serve static content
 n_conf="
