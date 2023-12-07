@@ -4,7 +4,9 @@
 nginx_exist=$(sudo service nginx status 2>&1 >/dev/null)
 if [ "$nginx_exist" ]
 then
-    sudo apt install nginx -y
+    sudo apt-get update -y
+    sudo apt-get upgrade -y
+    sudo apt-get install nginx -y
 fi
 
 sudo mkdir -p /data/web_static/releases/test/
@@ -25,7 +27,7 @@ sudo mkdir -p /data/web_static/shared
 # Creating Symbolic link
 sudo rm -rf /data/web_static/current
 #sudo mkdir -p /data/web_static/current
-sudo ln -s /data/web_static/releases/test /data/web_static/current
+sudo ln -sf /data/web_static/releases/test /data/web_static/current
 
 # Give ownership of /data folder to the user and his group
 sudo chown -R "$USER":"$USER" /data/
@@ -40,7 +42,7 @@ server {
        }
 }"
 
-echo "$n_conf" | sudo tee /etc/nginx/sites-enabled/default
+echo "$n_conf" | sudo tee -a /etc/nginx/sites-enabled/default
 
 # Restart nginx server
 sudo service nginx restart
