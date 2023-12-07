@@ -27,28 +27,30 @@ def do_deploy(archive_path):
 
     Returns False if the file at the path archive_path doesn't exist
     """
-    if !os.path.exists(archive_path):
-        return False
+    if os.path.exists(archive_path):
+        try:
+            put(archive_path, "/tmp/")
 
-    try:
-        put(archive_path, "/tmp/")
+            new_path = archive_path.partition(".")[0]
+            new_path = new_path.partition("/")[2]
+            new_path = f"/data/web_static/releases/{new_path}/"
+            run(f"mkdir -p {new_path}")
 
-        new_path = archive_path.partition(".")[0]
-        new_path = new_path.partition("/")[2]
-        new_path = f"/data/web_static/releases/{new_path}/"
-        run(f"mkdir -p {new_path}")
+            run(f"tar -xzvf /tmp/{archive_path.split('/')[1]} -C {new_path}")
 
-        run(f"tar -xzvf /tmp/{archive_path.split('/')[1]} -C {new_path}")
+            run(f"rm /tmp/{archive_path.split('/')[1]}")
 
-        run(f"rm /tmp/{archive_path.split('/')[1]}")
+            run("rm -rf /data/web_static/current")
 
-        run("rm -rf /data/web_static/current")
+            run(f"mv {new_path}web_static/* {new_path}")
+            run(f"rm -rf {new_path}web_static/")
 
-        run(f"mv {new_path}web_static/* {new_path}")
-        run(f"rm -rf {new_path}web_static/")
+            run(f"ln -s {new_path} /data/web_static/current")
 
-        run(f"ln -s {new_path} /data/web_static/current")
+            return True
 
-        return True
-    except Exception:
+        except Exception:
+            return False
+
+    else:
         return False
