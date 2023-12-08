@@ -27,7 +27,7 @@ def do_deploy(archive_path):
 
     Returns False if the file at the path archive_path doesn't exist
     """
-    if os.path.exists(archive_path) is False:
+    if not os.path.exists(archive_path):
         return False
 
     try:
