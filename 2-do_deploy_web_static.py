@@ -4,33 +4,10 @@ Fabric script (based on the file 1-pack_web_static.py) that distributes an
 archive to your web servers, using the function do_deploy
 """
 from fabric.api import *
-from datetime import datetime
 import os
 
 env.user = "ubuntu"
 env.hosts = ['54.237.64.177', '52.91.136.101']
-
-
-def do_pack():
-    """All files in the folder web_static must be added to the final archive
-
-    All archives must be stored in the folder versions (your function should
-    create this folder if it doesn't exist)
-
-    The name of the archive created must be:
-        web_static_<year><month><day><hour><minute><second>.tgz
-
-    The function do_pack must return the archive path if the archive has
-    been correctly generated. Otherwise, it should return None
-    """
-    now = datetime.now().strftime("%Y%m%d%H%M%S")
-    file_name = "versions/web_static_{}.tgz".format(now)
-    local("mkdir -p versions/")
-    x = local(f"tar -cvzf {file_name} web_static")
-    if x.succeeded:
-        return ("versions/{}".format(file_name))
-    else:
-        return None
 
 
 def do_deploy(archive_path):
@@ -50,31 +27,28 @@ def do_deploy(archive_path):
 
     Returns False if the file at the path archive_path doesn't exist
     """
-    if os.path.exists(archive_path):
-        try:
-            put(archive_path, "/tmp/")
+    if os.path.exists(archive_path) is False:
+        return False
 
-            new_path = archive_path.partition(".")[0]
-            new_path = new_path.partition("/")[2]
-            new_path = f"/data/web_static/releases/{new_path}/"
+    try:
+        put(archive_path, "/tmp/")
 
-            run(f"mkdir -p {new_path}")
+        new_path = archive_path.partition(".")[0]
+        new_path = new_path.partition("/")[-1]
+        new_path = f"/data/web_static/releases/{new_path}/"
 
-            run(f"tar -xzvf /tmp/{archive_path.split('/')[1]} -C {new_path}")
+        run(f"mkdir -p {new_path}")
 
-            run(f"rm /tmp/{archive_path.split('/')[1]}")
+        run(f"tar -xzvf /tmp/{archive_path.split('/')[1]} -C {new_path}")
 
-            run("rm -rf /data/web_static/current")
+        run(f"rm /tmp/{archive_path.split('/')[-1]}")
 
-            run(f"mv {new_path}web_static/* {new_path}")
-            run(f"rm -rf {new_path}web_static/")
+        run("rm -rf /data/web_static/current")
 
-            run(f"ln -s {new_path} /data/web_static/current")
+        run(f"mv {new_path}web_static/* {new_path}")
+        run(f"rm -rf {new_path}web_static/")
 
-            return True
-
-        except Exception:
-            return False
-
-    else:
+        run(f"ln -s {new_path} /data/web_static/current")
+        return True
+    except Exception:
         return False
