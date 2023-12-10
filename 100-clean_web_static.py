@@ -18,8 +18,8 @@ def do_clean(number=0):
     the /data/web_static/releases folder of both of your web servers
     """
     with lcd("versions/"):
-        l = local("ls -l | wc -l", capture=True)
-        t_f = int(l.stdout) - 1
+        ld = local("ls -l | wc -l", capture=True)
+        t_f = int(ld.stdout) - 1
         num = int(number)
         if num == 0:
             num = 1
@@ -30,8 +30,8 @@ def do_clean(number=0):
             t_f = t_f - 1
 
     with cd("/data/web_static/releases"):
-        l = run("ls -l | wc -l", capture=True)
-        t_f = int(l.stdout) - 1
+        ld = run("ls -l | wc -l", capture=True)
+        t_f = int(ld.stdout) - 1
         print(t_f)
         num = int(number)
         if num == 0:
