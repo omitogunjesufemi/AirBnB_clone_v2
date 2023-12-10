@@ -1,17 +1,17 @@
 # Redoing task #0 using puppet
-include stdlib
 
-package { 'nginx':
-  ensure => 'installed'
+exec { 'install nginx':
+  path    => '/usr/bin',
+  command => 'sudo apt update -y && sudo apt install nginx -y'
 }
 
 exec { 'create test directory':
-  path => '/usr/bin',
+  path    => '/usr/bin',
   command => 'sudo mkdir -p /data/web_static/releases/test/',
-  require => Package['nginx']
+  require => Exec['install nginx']
 }
 
-ind="<html>
+$ind="<html>
 	<head>
 	</head>
 	<body>
@@ -27,31 +27,31 @@ file { 'index.html':
 }
 
 exec { 'create shared directory':
-  path => '/usr/bin',
+  path    => '/usr/bin',
   command => 'sudo mkdir -p /data/web_static/shared',
   require => File['index.html']
 }
 
 exec { 'Remove Sym link for current file':
-  path => '/usr/bin',
+  path    => '/usr/bin',
   command => 'sudo rm -rf /data/web_static/current',
   require => Exec['create shared directory']
 }
 
 exec { 'Create Sym link for current file':
-  path => '/usr/bin',
+  path    => '/usr/bin',
   command => 'sudo ln -sf /data/web_static/releases/test /data/web_static/current',
   require => Exec['Remove Sym link for current file']
 }
 
 exec { 'Change ownership':
-  path => '/usr/bin',
+  path    => '/usr/bin',
   command => 'sudo chown -R ubuntu:ubuntu /data/',
   require => Exec['Create Sym link for current file']
 }
 
 
-n_conf="
+$n_conf="
 server {
        server_name _;
 
@@ -68,7 +68,7 @@ file { 'default file':
 }
 
 exec { 'Restart nginx':
-  path => '/usr/bin',
+  path    => '/usr/bin',
   command => 'sudo service nginx restart',
   require => File['default file']
 }
