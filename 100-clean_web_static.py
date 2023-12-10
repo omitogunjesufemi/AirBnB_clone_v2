@@ -17,7 +17,27 @@ def do_clean(number=0):
     Delete all unnecessary archives (all archives minus the number to keep) in
     the /data/web_static/releases folder of both of your web servers
     """
-    if number <= 1:
-        pass
-    else:
-        pass
+    with lcd("versions/"):
+        l = local("ls -l | wc -l", capture=True)
+        t_f = int(l.stdout) - 1
+        num = int(number)
+        if num == 0:
+            num = 1
+        while (t_f > num):
+            f_n = local("ls | head -1", capture=True)
+            f_name = str(f_n.stdout)
+            local(f"find -type f -name '{f_name}' | xargs rm")
+            t_f = t_f - 1
+
+    with cd("/data/web_static/releases"):
+        l = run("ls -l | wc -l", capture=True)
+        t_f = int(l.stdout) - 1
+        print(t_f)
+        num = int(number)
+        if num == 0:
+            num = 1
+        while (t_f > num):
+            f_n = run("ls -tr | head -1", capture=True)
+            f_name = str(f_n.stdout)
+            sudo(f"find -type d -name '{f_name}' | xargs rm")
+            t_f = t_f - 1
