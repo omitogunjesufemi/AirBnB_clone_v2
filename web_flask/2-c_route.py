@@ -29,6 +29,7 @@ def hbnb_print():
 @hbnb.route("/c/<text>", strict_slashes=False)
 def display_c(text):
     """Displays C follow by value of text """
+    text = text.replace("_", " ")
     return (f"C {text}")
 
 
