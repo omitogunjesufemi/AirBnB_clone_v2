@@ -8,12 +8,14 @@ Routes:
    /hbnb: displays HBNB
    /c/<text>: display C followed by the value of the text variable
    (replace underscore _ symbols with a space)
+
    /python/<text>: display Python followed by the value of the text
    variable (replace underscore with a space) [text default: is cool]
+
    /number/<int:n>: display n is a number only if n is an integer
 
 """
-from flask import Flask
+from flask import Flask, render_template, url_for
 
 hbnb = Flask(__name__)
 
@@ -50,6 +52,12 @@ def display_python(text):
 def display_n(n):
     """Displays n is a number only if n is an integer """
     return (f"{n} is a number")
+
+
+@hbnb.route("/number_template/<int:n>", strict_slashes=False)
+def display_number_template(n):
+    """Displays a HTML page only if n is an integer """
+    return render_template("5-number.html", n=n)
 
 
 if __name__ == "__main__":
