@@ -6,8 +6,8 @@ from flask import Flask
 hbnb = Flask(__name__)
 
 
-@hbnb.route("/")
-@hbnb.route("/hbnb")
+@hbnb.route("/", strict_slashes=False)
+@hbnb.route("/hbnb", strict_slashes=False)
 def hello_hbnb():
     """Route to display Hello HBNB!"""
     return ("Hello HBNB!")
