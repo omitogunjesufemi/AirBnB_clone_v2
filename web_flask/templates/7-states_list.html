@@ -6,7 +6,7 @@
   <BODY>
     <H1>States</H1>
     <UL>
-      {% for key, value in states.items()|sort %}
+      {% for key, value in states.items()|sort(case_sensitive=True) %}
         <LI>{{ key.split('.')[1] }}: <B>{{ value.name }}</B></LI>
       {% endfor %}
     </UL>
