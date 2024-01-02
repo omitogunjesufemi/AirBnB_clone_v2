@@ -7,8 +7,8 @@
      {% if state_id == "None" %}
          <H1>States</H1>
          <UL>
-          {% for s_key, state in states.items()|sort %}
-              <LI>{{ s_key.split('.')[1] }}: <B>{{ state.name }}</B></LI>
+          {% for state in states.values()|sort(attribute="name") %}
+              <LI>{{ state.id }}: <B>{{ state.name }}</B></LI>
 	  {% endfor %}
 	 </UL>
      {% else %}
